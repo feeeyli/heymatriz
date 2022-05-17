@@ -1,5 +1,10 @@
+import { Matrix } from "../Matrix";
 import { Container } from "./styles";
 
 export const App = () => {
-	return <Container />;
+	return (
+		<Container>
+			<Matrix />
+		</Container>
+	);
 };

@@ -11,7 +11,13 @@ type Flex = {
 
 export const { styled, globalCss } = createStitches({
 	theme: {
-		colors: {},
+		colors: {
+			dark: "#353535",
+			white: "#ffffff",
+			gray: "#848484",
+			primary: "#284b63",
+			secondary: "#3c6e71",
+		},
 	},
 	utils: {
 		$flex: ({
@@ -31,9 +37,21 @@ export const { styled, globalCss } = createStitches({
 });
 
 export const globalStyles = globalCss({
+	"@import":
+		"url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap')",
+
 	"*, input, a": {
 		margin: 0,
 		padding: 0,
 		boxSizing: "border-box",
+		fontFamily: "Poppins",
+	},
+
+	body: {
+		height: "100vh",
+		background: "$dark",
+		$flex: {
+			fullCenter: true,
+		},
 	},
 });
