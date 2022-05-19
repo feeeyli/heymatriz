@@ -16,7 +16,6 @@ import { styled } from "@styles";
 import { Check as CheckIcon, X as XIcon } from "phosphor-react";
 import { Fragment, useEffect, useState } from "react";
 import { Calculator } from "~/Calculator";
-import { MatrixCalculator } from "~/MatrixCalculator";
 
 const Brackets = () => {
 	const Svg = styled("svg", {
@@ -62,42 +61,32 @@ const Brackets = () => {
 	);
 };
 
-export interface IMatrix {
-	letter: string;
-	formationRule: string;
-	size: {
-		row: number;
-		column: number;
-	};
-}
-
 interface MatrixProps {
-	matrix: IMatrix;
-	matrixs: IMatrix[];
-	updateMatrix: (newMatrix: IMatrix) => void;
+	letter: string;
 }
 
-export const Matrix = ({ matrix, updateMatrix, matrixs }: MatrixProps) => {
-	const [matrixRows, setMatrixRows] = useState(matrix.size.row);
-	const [matrixColumns, setMatrixColumns] = useState(matrix.size.column);
-	const [formationRule, setFormationRule] = useState(matrix.formationRule);
+export const Matrix = ({ letter }: MatrixProps) => {
+	const [matrixRows, setMatrixRows] = useState(3);
+	const [matrixColumns, setMatrixColumns] = useState(3);
+	const [matrix, setMatrix] = useState<string[][]>([]);
+	const [formationRule, setFormationRule] = useState("i + j");
 	const [mainDiagonal, setMainDiagonal] = useState<string[]>([]);
 	const [secondaryDiagonal, setSecondaryDiagonal] = useState<string[]>([]);
 	const [resumedMatrix, setResumedMatrix] = useState<string[][]>([]);
-	const [renderedMatrix, setRenderedMatrix] = useState<string[][]>([]);
 
 	const calculator = new Calculator();
-	const matrixCalculator = new MatrixCalculator();
 
-	function renderMatrix(rows: number, columns: number, formation: string) {
+	useEffect(() => {
 		let newMatrix: string[][] = [];
+		let newMainD: string[] = [];
+		let newSecondaryD: string[] = [];
 
-		for (let i = 0; i < rows; i++) {
+		for (let i = 0; i < matrixRows; i++) {
 			newMatrix.push([]);
 
-			for (let j = 0; j < columns; j++) {
+			for (let j = 0; j < matrixColumns; j++) {
 				let itemValue = calculator.calculate(
-					formation
+					formationRule
 						.replaceAll("i", String(i + 1))
 						.replaceAll("j", String(j + 1))
 				);
@@ -108,45 +97,6 @@ export const Matrix = ({ matrix, updateMatrix, matrixs }: MatrixProps) => {
 			}
 		}
 
-		return newMatrix;
-	}
-
-	useEffect(() => {
-		let newMatrix: string[][] = [];
-		let newMainD: string[] = [];
-		let newSecondaryD: string[] = [];
-
-		if (/^##/g.test(formationRule)) {
-			let equation: (string | string[][])[] = formationRule
-				.replace("##", "")
-				.split(" ");
-
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((letter) => {
-				let mat = matrixs.find((mat) => mat.letter === letter);
-
-				if (!mat) return;
-
-				equation.forEach((equationItem, index, arr) => {
-					if (equationItem === letter)
-						arr[index] = renderMatrix(
-							mat!.size.row,
-							mat!.size.column,
-							mat!.formationRule
-						);
-				});
-			});
-
-			let equationResult = matrixCalculator.calculate(equation);
-
-			if (typeof equationResult === "object") {
-				newMatrix = equationResult;
-			} else {
-				newMatrix = [["!err¡"]];
-			}
-		} else {
-			newMatrix = renderMatrix(matrixRows, matrixColumns, formationRule);
-		}
-
 		if (matrixRows === matrixColumns) {
 			newMatrix.forEach((row, index) => newMainD.push(row[index]));
 			newMatrix.forEach((row, index) =>
@@ -154,58 +104,50 @@ export const Matrix = ({ matrix, updateMatrix, matrixs }: MatrixProps) => {
 			);
 		}
 
-		// if (matrixRows >= 6 && matrixColumns >= 6)
-		// 	setResumedMatrix([
-		// 		[
-		// 			newMatrix[0][0],
-		// 			newMatrix[0][1],
-		// 			newMatrix[0][2],
-		// 			newMatrix[0][3],
-		// 			"...",
-		// 		],
-		// 		[
-		// 			newMatrix[1][0],
-		// 			newMatrix[1][1],
-		// 			newMatrix[1][2],
-		// 			newMatrix[1][3],
-		// 			"...",
-		// 		],
-		// 		[
-		// 			newMatrix[2][0],
-		// 			newMatrix[2][1],
-		// 			newMatrix[2][2],
-		// 			newMatrix[2][3],
-		// 			"...",
-		// 		],
-		// 		[
-		// 			newMatrix[3][0],
-		// 			newMatrix[3][1],
-		// 			newMatrix[3][2],
-		// 			newMatrix[3][3],
-		// 			"...",
-		// 		],
-		// 		[
-		// 			"...",
-		// 			"...",
-		// 			"...",
-		// 			"...",
-		// 			newMatrix[newMatrix.length - 1][
-		// 				newMatrix[newMatrix.length - 1].length - 1
-		// 			],
-		// 		],
-		// 	]);
+		if (matrixRows >= 6 && matrixColumns >= 6)
+			setResumedMatrix([
+				[
+					newMatrix[0][0],
+					newMatrix[0][1],
+					newMatrix[0][2],
+					newMatrix[0][3],
+					"...",
+				],
+				[
+					newMatrix[1][0],
+					newMatrix[1][1],
+					newMatrix[1][2],
+					newMatrix[1][3],
+					"...",
+				],
+				[
+					newMatrix[2][0],
+					newMatrix[2][1],
+					newMatrix[2][2],
+					newMatrix[2][3],
+					"...",
+				],
+				[
+					newMatrix[3][0],
+					newMatrix[3][1],
+					newMatrix[3][2],
+					newMatrix[3][3],
+					"...",
+				],
+				[
+					"...",
+					"...",
+					"...",
+					"...",
+					newMatrix[newMatrix.length - 1][
+						newMatrix[newMatrix.length - 1].length - 1
+					],
+				],
+			]);
 
 		setMainDiagonal(newMainD);
 		setSecondaryDiagonal(newSecondaryD);
-		setRenderedMatrix(newMatrix);
-		updateMatrix({
-			letter: matrix.letter,
-			formationRule,
-			size: {
-				row: matrixRows,
-				column: matrixColumns,
-			},
-		});
+		setMatrix(newMatrix);
 	}, [matrixRows, matrixColumns, formationRule]);
 
 	return (
@@ -215,7 +157,7 @@ export const Matrix = ({ matrix, updateMatrix, matrixs }: MatrixProps) => {
 				onChange={(e) => setFormationRule(e.target.value)}
 			/>
 			<MatrixContainer>
-				<MatrixNameIndicator>{matrix.letter} =</MatrixNameIndicator>
+				<MatrixNameIndicator>{letter} =</MatrixNameIndicator>
 				<MatrixContent
 					css={{
 						$$columns: matrixColumns,
@@ -227,7 +169,7 @@ export const Matrix = ({ matrix, updateMatrix, matrixs }: MatrixProps) => {
 						}%`,
 					}}
 				>
-					{renderedMatrix.map((row, rowIndex) => (
+					{matrix.map((row, rowIndex) => (
 						<Fragment key={rowIndex}>
 							{row.map((item, columnIndex) => (
 								<MatrixItem
@@ -286,12 +228,12 @@ export const Matrix = ({ matrix, updateMatrix, matrixs }: MatrixProps) => {
 					)}
 				</MatrixIndicator>
 				<MatrixIndicator
-					isTrue={renderedMatrix.every((row) =>
+					isTrue={matrix.every((row) =>
 						row.every((item) => Number(item) === 0)
 					)}
 				>
 					Matriz Nula
-					{renderedMatrix.every((row) =>
+					{matrix.every((row) =>
 						row.every((item) => Number(item) === 0)
 					) ? (
 						<CheckIcon weight="bold" />

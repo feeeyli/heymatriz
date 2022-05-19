@@ -34,6 +34,9 @@ export const { styled, globalCss } = createStitches({
 			flexDirection: dir,
 		}),
 	},
+	media: {
+		sm: "(max-width: 780px)",
+	},
 });
 
 export const globalStyles = globalCss({
@@ -47,11 +50,12 @@ export const globalStyles = globalCss({
 		fontFamily: "Poppins",
 	},
 
-	body: {
-		height: "100vh",
+	"#root": {
+		padding: 32,
+		minHeight: "100vh",
 		background: "$dark",
 		$flex: {
-			fullCenter: true,
+			align: "center",
 		},
 	},
 });

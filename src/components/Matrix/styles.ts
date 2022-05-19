@@ -22,23 +22,26 @@ export const FormationRule = styled("input", {
 
 export const MatrixContainer = styled("div", {
 	position: "relative",
-
-	svg: {
-		zIndex: -1,
-	},
 });
 
 export const MatrixContent = styled("div", {
 	display: "grid",
 	gridTemplateColumns: "repeat($$columns, 1fr)",
 	gridTemplateRows: "repeat($$rows, 1fr)",
+	fontSize: "62.5%",
 });
 
 export const MatrixItem = styled("div", {
-	padding: 32,
+	padding: "28px",
+	fontSize: "22px",
+
+	"@sm": {
+		padding: "1em",
+		fontSize: "1.8em",
+	},
+
 	aspectRatio: 1,
 	color: "$white",
-	fontSize: 20,
 	$flex: {
 		fullCenter: true,
 	},
@@ -97,5 +100,13 @@ export const MatrixIndicator = styled("div", {
 export const MatrixDiagonalsWrapper = styled("div", {});
 
 export const MatrixDiagonal = styled("div", {
+	color: "$white",
+});
+
+export const MatrixNameIndicator = styled("span", {
+	position: "absolute",
+	top: 8,
+	left: -16,
+	transform: "translateX(-100%)",
 	color: "$white",
 });

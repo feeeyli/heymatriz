@@ -14,7 +14,7 @@ export class Calculator {
 	constructor() {}
 
 	private potentiation(equation: Equation) {
-		let solvedEquation = [];
+		let solvedEquation: Equation = [];
 
 		equation.forEach((item, index) => {
 			if (item === "**") {
@@ -33,7 +33,7 @@ export class Calculator {
 	}
 
 	private multiplicationAndDivision(equation: Equation) {
-		let solvedEquation = [];
+		let solvedEquation: Equation = [];
 
 		equation.forEach((item, index) => {
 			if (item === "*" || item === "/") {
@@ -90,10 +90,10 @@ export class Calculator {
 		let result = separatedEquation[0];
 
 		separatedEquation.forEach((item, index) => {
-			if (this.operationsWithSignals[item]) {
-				result = this.operationsWithSignals[item](
-					result,
-					separatedEquation[index + 1]
+			if (this.operationsWithSignals[item as OperationsSignals]) {
+				result = this.operationsWithSignals[item as OperationsSignals](
+					Number(result),
+					Number(separatedEquation[index + 1])
 				);
 			}
 		});
